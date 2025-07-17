@@ -13,8 +13,10 @@ library(ggpubr)
 theme_set(theme_bw())
 library(RColorBrewer)
 library(bboutools)
-library(caribouMetrics) #Note this must be installed from the BbouIntegration branch
 library(mcmcr)
+#library(caribouMetrics) #Note this must be installed from the BbouIntegration branch
+devtools::load_all(path = "../caribouMetrics/")
+
 
 figDir ="./figs/"
 dir.create(figDir,recursive=T)
@@ -22,13 +24,16 @@ dia_shp <- 23
 err_col <- "grey50"
 baseDir <- "."
 
+#Note - set niters to 100 to run quickly when testing. Set to 1000 for complete results.
+niters <- 100
+
 N0 <- 1000
 scns=list()
 scns$lQuantile=0.99
 scns$qMax = 0; scns$uMax=0; scns$zMax=0
 correlateRates = T #Force correlation among demographic rates to examine extreme cases
 
-bbouResultFile = "./data/bbouResultsLabrador.Rds"
+bbouResultFile = "../CaribouLabradorShare/data/bbouResultsLabrador.Rds"
 scns$obsAnthroSlope = 0 #set NA to use bboutools nimble model, set number to use jags model with informative priors
 scns$projAnthroSlope = 0 #set NA to use bboutools nimble model, set number to use jags model with informative priors
 eParsIn = list()
@@ -79,8 +84,9 @@ scns$projYears <- max(simBig$summary$Year)-scns$obsYears-scns$startYear
 #########################################################
 #Example simulation
 #devtools::load_all(path = "../caribouMetrics/")
-#Note - set niters to 100 to run quickly when testing. Set to 1000 for complete results.
-posteriorResult = caribouMetrics:::runScnSet(scns,eParsIn,simBig,printProgress=F,niters=100,nthin=10)
+posteriorResult = caribouMetrics:::runScnSet(scns,eParsIn,simBig,printProgress=F,niters=niters,nthin=10,
+                                             returnExpected=T)
+posteriorResult$sim.all=NULL
 
 recPosterior =  plotRes(posteriorResult, "Recruitment", lowBound=-0.1,highBound = 1.2,
                         breakInterval=breakInterval,
