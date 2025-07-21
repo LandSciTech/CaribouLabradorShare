@@ -84,8 +84,7 @@ scns$projYears <- max(simBig$summary$Year)-scns$obsYears-scns$startYear
 #########################################################
 #Example simulation
 #devtools::load_all(path = "../caribouMetrics/")
-posteriorResult = caribouMetrics:::runScnSet(scns,eParsIn,simBig,printProgress=F,niters=niters,nthin=10,
-                                             returnExpected=T)
+posteriorResult = caribouMetrics:::runScnSet(scns,eParsIn,simBig,printProgress=F,niters=niters,nthin=10)
 posteriorResult$sim.all=NULL
 
 recPosterior =  plotRes(posteriorResult, "Recruitment", lowBound=-0.1,highBound = 1.2,
@@ -104,12 +103,22 @@ ggsave(paste0(baseDir,"/figs/bayesianExamplesSurvPosterior.png"),
        width = 9.6*0.779, height = 4, units = "in",
        dpi = 1200)
 
+
 lambdaPosterior =  plotRes(posteriorResult, "Population growth rate", lowBound=0,
                            legendPosition="none",breakInterval=breakInterval,
                            labFontSize=labFontSize)+
   ylim(c(0, 1.5))
 plot(lambdaPosterior)
 ggsave(paste0(baseDir,"/figs/bayesianExamplesLamPosterior.png"),
+       width = 9.6*0.779, height = 4, units = "in",
+       dpi = 1200)
+
+lambdaPosterior =  plotRes(posteriorResult, "Expected growth rate", lowBound=0,
+                           legendPosition="none",breakInterval=breakInterval,
+                           labFontSize=labFontSize)+
+  ylim(c(0, 1.5))
+plot(lambdaPosterior)
+ggsave(paste0(baseDir,"/figs/bayesianExamplesLamBarPosterior.png"),
        width = 9.6*0.779, height = 4, units = "in",
        dpi = 1200)
 
