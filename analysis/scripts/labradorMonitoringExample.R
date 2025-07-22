@@ -27,10 +27,9 @@ baseDir <- "."
 #Note - set niters to 100 to run quickly when testing. Set to 1000 for complete results.
 niters <- 100
 
-N0 <- 1000
+N0 <- 10000
 scns=list()
 scns$lQuantile=0.99
-scns$qMax = 0; scns$uMax=0; scns$zMax=0
 correlateRates = T #Force correlation among demographic rates to examine extreme cases
 
 bbouResultFile = "../CaribouLabradorShare/data/bbouResultsLabrador.Rds"
@@ -48,7 +47,6 @@ simBig <- getSimsInitial(bbouResultFile,cPars = list(correlateRates=correlateRat
 ###############
 #Example monitoring scenario - repeat everything that was done again
 #Kara - you could replace this with some other monitoring scenario.
-
 cowCounts <- subset(simBig$recruit_data,!is.na(Cows)&(Year>=2019),select=c("PopulationName","Year", "Cows","CowsBulls", "UnknownAdults","Yearlings"))
 simStartYr <- max(cowCounts$Year)+2
 cowCounts$Year <- simStartYr + cowCounts$Year - min(cowCounts$Year)
@@ -85,40 +83,39 @@ scns$projYears <- max(simBig$summary$Year)-scns$obsYears-scns$startYear
 #Example simulation
 #devtools::load_all(path = "../caribouMetrics/")
 posteriorResult = caribouMetrics:::runScnSet(scns,eParsIn,simBig,printProgress=F,niters=niters,nthin=10)
-posteriorResult$sim.all=NULL
 
 recPosterior =  plotRes(posteriorResult, "Recruitment", lowBound=-0.1,highBound = 1.2,
                         breakInterval=breakInterval,
                         labFontSize=labFontSize)
 plot(recPosterior)
-ggsave(paste0(baseDir,"/figs/bayesianExamplesRecPosterior.png"),
+ggsave(paste0(baseDir,"/figs/eRec.png"),
        width = 9.6*0.779, height = 4, units = "in",
        dpi = 1200)
 
 survPosterior =  plotRes(posteriorResult, "Adult female survival", lowBound=0,
-                         legendPosition="none",breakInterval=breakInterval,
+                         breakInterval=breakInterval,
                          labFontSize=labFontSize)
 plot(survPosterior)
-ggsave(paste0(baseDir,"/figs/bayesianExamplesSurvPosterior.png"),
+ggsave(paste0(baseDir,"/figs/eSurv.png"),
        width = 9.6*0.779, height = 4, units = "in",
        dpi = 1200)
 
 
 lambdaPosterior =  plotRes(posteriorResult, "Population growth rate", lowBound=0,
-                           legendPosition="none",breakInterval=breakInterval,
+                           breakInterval=breakInterval,
                            labFontSize=labFontSize)+
   ylim(c(0, 1.5))
 plot(lambdaPosterior)
-ggsave(paste0(baseDir,"/figs/bayesianExamplesLamPosterior.png"),
+ggsave(paste0(baseDir,"/figs/eLam.png"),
        width = 9.6*0.779, height = 4, units = "in",
        dpi = 1200)
 
 lambdaPosterior =  plotRes(posteriorResult, "Expected growth rate", lowBound=0,
-                           legendPosition="none",breakInterval=breakInterval,
+                           breakInterval=breakInterval,
                            labFontSize=labFontSize)+
   ylim(c(0, 1.5))
 plot(lambdaPosterior)
-ggsave(paste0(baseDir,"/figs/bayesianExamplesLamBarPosterior.png"),
+ggsave(paste0(baseDir,"/figs/eLamBar.png"),
        width = 9.6*0.779, height = 4, units = "in",
        dpi = 1200)
 
