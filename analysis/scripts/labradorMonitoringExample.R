@@ -14,9 +14,8 @@ theme_set(theme_bw())
 library(RColorBrewer)
 library(bboutools)
 library(mcmcr)
-#library(caribouMetrics) #Note this must be installed from the BbouIntegration branch
-devtools::load_all(path = "../caribouMetrics/")
-
+library(caribouMetrics) #Note this must be installed from the BbouIntegration branch
+#devtools::load_all(path = "../caribouMetrics/")
 
 figDir ="./figs/"
 dir.create(figDir,recursive=T)
@@ -29,12 +28,12 @@ niters <- 100
 
 N0 <- 10000
 scns=list()
-scns$lQuantile=0.99
+scns$lQuantile=0.01
 correlateRates = T #Force correlation among demographic rates to examine extreme cases
 
 bbouResultFile = "../CaribouLabradorShare/data/bbouResultsLabrador.Rds"
-scns$obsAnthroSlope = 0 #set NA to use bboutools nimble model, set number to use jags model with informative priors
-scns$projAnthroSlope = 0 #set NA to use bboutools nimble model, set number to use jags model with informative priors
+scns$obsAnthroSlope = NA #set NA to use bboutools nimble model, set number to use jags model with informative priors
+scns$projAnthroSlope = NA #set NA to use bboutools nimble model, set number to use jags model with informative priors
 eParsIn = list()
 eParsIn$collarOnTime=4
 eParsIn$collarOffTime=4
@@ -56,7 +55,7 @@ firstPop <- T
 for(p in pops){
   #p = pops[1]
   startBit <- subset(simBig$surv_data,(!is.na(Mortalities))&(PopulationName==p))
-  startBit <- startBit[order(startBit$Year,startBit$Month),]
+  startBit <- startBit[order(startBit$Annual,startBit$Month),]
   startBit$nextStartTotal <- c(startBit$StartTotal[2:nrow(startBit)],NA)
   startBit$numStarts <- startBit$nextStartTotal-startBit$StartTotal+startBit$Mortalities+startBit$Malfunctions
   startBit$numStarts[is.na(startBit$numStarts)] <- 0
