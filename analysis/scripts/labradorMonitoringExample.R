@@ -85,7 +85,7 @@ posteriorResult = caribouMetrics:::runScnSet(scns,eParsIn,simBig,printProgress=F
 
 recPosterior =  plotRes(posteriorResult, "Recruitment", lowBound=-0.1,highBound = 1.2,
                         breakInterval=breakInterval,
-                        labFontSize=labFontSize)
+                        labFontSize=labFontSize)+theme_linedraw()
 plot(recPosterior)
 ggsave(paste0(baseDir,"/figs/eRec.png"),
        width = 9.6*0.779, height = 4, units = "in",
@@ -93,7 +93,7 @@ ggsave(paste0(baseDir,"/figs/eRec.png"),
 
 survPosterior =  plotRes(posteriorResult, "Adult female survival", lowBound=0,
                          breakInterval=breakInterval,
-                         labFontSize=labFontSize)
+                         labFontSize=labFontSize)+theme_linedraw()
 plot(survPosterior)
 ggsave(paste0(baseDir,"/figs/eSurv.png"),
        width = 9.6*0.779, height = 4, units = "in",
@@ -102,8 +102,7 @@ ggsave(paste0(baseDir,"/figs/eSurv.png"),
 
 lambdaPosterior =  plotRes(posteriorResult, "Population growth rate", lowBound=0,
                            breakInterval=breakInterval,
-                           labFontSize=labFontSize)+
-  ylim(c(0, 1.5))
+                           labFontSize=labFontSize)+ylim(c(0, 1.5))+theme_linedraw()
 plot(lambdaPosterior)
 ggsave(paste0(baseDir,"/figs/eLam.png"),
        width = 9.6*0.779, height = 4, units = "in",
