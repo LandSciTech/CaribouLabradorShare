@@ -34,10 +34,6 @@ correlateRates = T #Force correlation among demographic rates to examine extreme
 bbouResultFile = "../CaribouLabradorShare/data/bbouResultsLabrador.Rds"
 scns$obsAnthroSlope = NA #set NA to use bboutools nimble model, set number to use jags model with informative priors
 scns$projAnthroSlope = NA #set NA to use bboutools nimble model, set number to use jags model with informative priors
-eParsIn = list()
-eParsIn$collarOnTime=4
-eParsIn$collarOffTime=4
-eParsIn$collarNumYears=4
 labFontSize = 10; breakInterval=5
 
 #devtools::load_all(path = "../caribouMetrics/")
@@ -72,6 +68,7 @@ freqStartsByYr$Annual <- as.numeric(as.factor(freqStartsByYr$Annual))
 freqStartsByYr$Year <- simStartYr + freqStartsByYr$Annual - min(freqStartsByYr$Annual)
 
 #Needed inputs are cowCounts and freqStartsByYear tables.
+eParsIn <- formals(caribouMetrics::runScnSet)$ePars
 eParsIn$cowCounts <- cowCounts;eParsIn$freqStartsByYear <- freqStartsByYr
 
 scns$obsYears<- max(freqStartsByYr$Year)-min(simBig$recruit_data$Year)
@@ -81,7 +78,7 @@ scns$projYears <- max(simBig$summary$Year)-scns$obsYears-scns$startYear
 #########################################################
 #Example simulation
 #devtools::load_all(path = "../caribouMetrics/")
-posteriorResult = caribouMetrics:::runScnSet(scns,eParsIn,simBig,printProgress=F,niters=niters,nthin=10)
+posteriorResult = caribouMetrics:::runScnSet(scns,simBig,eParsIn,printProgress=F,niters=niters,nthin=10)
 
 recPosterior =  plotRes(posteriorResult, "Recruitment", lowBound=-0.1,highBound = 1.2,
                         breakInterval=breakInterval,
